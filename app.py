@@ -140,11 +140,15 @@ if uploaded_files:
 
     if st.button("🚀 开始提取", type="primary", use_container_width=True):
         api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
+        base_url = st.secrets.get("ANTHROPIC_BASE_URL", "")
         if not api_key:
             st.error("未配置 ANTHROPIC_API_KEY，请在 Streamlit Secrets 中添加。")
             st.stop()
 
-        client = anthropic.Anthropic(api_key=api_key)
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        client = anthropic.Anthropic(**client_kwargs)
         results = []
         progress = st.progress(0, text="正在识别...")
 
